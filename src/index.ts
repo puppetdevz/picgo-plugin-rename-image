@@ -83,7 +83,7 @@ export = (ctx: IPicGo) => {
               // 字符串替换
               .replace(/{(hash|origin:?(.+)?|\w+)}/gi, (result, key, replacement) => {
                 // 文件原名
-                if (key.startWith('origin')) {
+                if (key.startsWith('origin')) {
                   replacement = replacement === '' ? '-' : replacement
                   return fileName
                     .substring(0, Math.max(0, fileName.lastIndexOf('.')) || fileName.length)
