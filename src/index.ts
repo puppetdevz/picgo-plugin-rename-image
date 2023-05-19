@@ -81,12 +81,13 @@ export = (ctx: IPicGo) => {
                 }
               })
               // 字符串替换
-              .replace(/{(hash|origin|\w+)}/gi, (result, key) => {
+              .replace(/{(hash|origin:?(.+)?|\w+)}/gi, (result, key, replacement) => {
                 // 文件原名
-                if (key === 'origin') {
+                if (key.startWith('origin')) {
+                  replacement = replacement === '' ? '-' : replacement
                   return fileName
                     .substring(0, Math.max(0, fileName.lastIndexOf('.')) || fileName.length)
-                    .replace(/[\\/:<>|"'*?$#&@()[\]^~]+/g, '-')
+                    .replace(/[\\/:<>|"' *?$#&@()[\]^~]+/g, replacement)
                 }
                 // 文件hash值
                 if (key === 'hash') {

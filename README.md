@@ -33,7 +33,7 @@ image/note/images/test/2020/07/24/21-40-31-36921a9c364ed4789d4bc684bcb81d62-loca
 - {ms}：毫秒，3位(**v1.0.4**)
 - `{timestamp}`：时间戳(秒)，10位
 - `{hash}`：文件的 md5 值，32位
-- `{origin}`：文件原名（会去掉后缀）
+- `{origin:<replacement>}`：文件原名（会去掉后缀）， 会将文件原名中的不合法字符替换为`<replacement>`，例如空格等等，默认为 `-`
 - `{rand:<count>}`：随机字符数，`<count>` 表示个数，默认为6个，示例：{rand：32}、{rand}
 - `{localFolder:<count>}`：`<count>`表示层级 ，默认为 1，示例：{localFolder:6}、{localFolder}
 

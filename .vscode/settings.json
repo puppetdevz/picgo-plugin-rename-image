@@ -1,0 +1,66 @@
+// ====================================================
+// VSCode config start
+// ====================================================
+"editor.tabSize": 2,
+// 是否超过屏幕时自动换行
+"editor.wordWrap": "off", 
+// 当获得焦点或失去焦点时，文件自动保存
+"files.autoSave": "onFocusChange"，
+// 置为 true，大致含义是每次保存自动执行代码格式化：idea快捷键为 ctrl + alt + L
+"editor.formatOnSave": true,
+// 是否使用连字符
+"editor.fontLigatures": false,
+// ====================================================
+// VSCode config end
+// ====================================================
+
+// ====================================================
+// prettier config start
+// ====================================================
+// 基础配置 =>
+// 设置为所有语言的默认格式化工具
+"editor.defaultFormatter": "esbenp.prettier-vscode",
+// 其他语言也可以单独设置，会覆盖上面的全局设置
+"[jsonc]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+},
+
+// 规则配置 => 利用 VSCode 编辑器，可以很方便地进行配置（语法提示）默认值可以不用配置的，下面只是方便阅读
+// 2 个空格缩进
+"prettier.tabWidth": 2,
+// 不使用缩进符，使用空格
+"prettier.useTabs": false,
+// 使用单引号，prettier 默认是双引号
+"prettier.jsxSingleQuote": true,
+// 行尾不使用分号“；”
+"prettier.semi": false,
+// 一行多少字符会换行
+"prettier.printWidth": 100,
+// 箭头函数，只有一个参数时，不需要括号
+"prettier.arrowParens": "avoid",
+// 在对象或数组最后一个元素后面是否加逗号：es5 | none | all，默认为 es5
+// es5 表示在 es5 中才会加，其他不加
+"prettier.trailingComma": "none",
+// ====================================================
+// prettier config end
+// ====================================================
+
+// ====================================================
+// eslint config start
+// ====================================================
+// 当我们每次保存文件的时候就可自动 fix 文件的错误格式。
+"editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+},
+// eslint 实时检查语言列表
+"eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "vue",
+    "typescript",
+    "typescriptreact",
+    "html"
+],
+// ====================================================
+// eslint config end
+// ====================================================
