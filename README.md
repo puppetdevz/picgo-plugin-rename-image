@@ -13,7 +13,7 @@
 默认为空，自定义文件路径及文件名，例如：
 
 ```sh
-image/note/{localFolder:2}/{y}/{m}/{d}/{h}-{i}-{s}-{hash}-{origin}-{rand:6}
+image/note/{localFolder:2}/{Y}/{m}/{d}/{h}-{i}-{s}-{hash}-{origin}-{rand:6}
 ```
 
 上传文件名为 `/images/test/localImage.jpg` 的文件时，会重命名为
@@ -24,7 +24,8 @@ image/note/images/test/2020/07/24/21-40-31-36921a9c364ed4789d4bc684bcb81d62-loca
 
 具体的变量含义如下：
 
-- {y}：年，4位
+- {Y}：年，4位，例如 2023
+- {y}：年，2位，例如 23
 - {m}：月，2位
 - {d}：日期，2位
 - {h}：小时，2位

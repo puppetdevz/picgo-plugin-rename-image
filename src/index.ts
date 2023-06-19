@@ -17,7 +17,7 @@ const pluginConfig = (ctx: IPicGo): IPluginConfig[] => {
       type: 'input',
       alias: '路径格式',
       default: (userConfig as IPluginConfig).format || '',
-      message: '如：image/note/{localFolder:2}/{y}/{m}/{d}/{h}-{i}-{s}-{hash}-{origin}-{rand:5}',
+      message: '如：image/note/{localFolder:2}/{Y}/{m}/{d}/{h}-{i}-{s}-{hash}-{origin:_}-{rand:5}',
       required: false
     }
   ]
@@ -44,7 +44,8 @@ export = (ctx: IPicGo) => {
           if (format) {
             const currentTime = new Date()
             const formatObject = {
-              y: currentTime.getFullYear(),
+              Y: currentTime.getFullYear(),
+              y: currentTime.getFullYear().toString().slice(2),
               m: currentTime.getMonth() + 1,
               d: currentTime.getDate(),
               h: currentTime.getHours(),
@@ -58,7 +59,7 @@ export = (ctx: IPicGo) => {
               .trim()
               // 替换日期
               .replace(/{(y|m|d|h|i|s|ms|timestamp)}/gi, (result, key) => {
-                if (key === 'ms' || key === 'timestamp') return formatObject[key]
+                if (key === 'ms' || key === 'timestamp' || key === 'y') return formatObject[key]
                 else return formatObject[key].toString().padStart(2, '0')
               })
               // 截取本地目录
