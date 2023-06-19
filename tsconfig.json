@@ -9,6 +9,8 @@
     "target": "es2017",
     "declaration": true,
     "outDir": "dist",
+    "strictNullChecks": true,
+    "skipLibCheck": true, // 临时
     // It's shit.
     // "baseUrl": "src",
     // "paths": {
@@ -17,13 +19,7 @@
     //   "@plugins/*": ["plugins/*"],
     //   "@utils/*": ["utils/*"]
     // },
-    "lib": [
-      "es2017",
-      "es2015",
-      "es6"
-    ]
+    "lib": ["es2017", "es2015", "es6"]
   },
-  "include": [
-    "./src/**/*"
-  ]
+  "include": ["./src/**/*"]
 }

@@ -59,8 +59,9 @@ export = (ctx: IPicGo) => {
               .trim()
               // 替换日期
               .replace(/{(y|m|d|h|i|s|ms|timestamp)}/gi, (result, key) => {
-                if (key === 'ms' || key === 'timestamp' || key === 'y') return formatObject[key]
-                else return formatObject[key].toString().padStart(2, '0')
+                if (key === 'ms' || key === 'timestamp' || key === 'y') {
+                  return formatObject[key]
+                } else return formatObject[key].toString().padStart(2, '0')
               })
               // 截取本地目录
               .replace(/{(localFolder:?(\d+)?)}/gi, (result, key, count) => {
@@ -73,13 +74,15 @@ export = (ctx: IPicGo) => {
               })
               // 随机字符串
               .replace(/{(rand:?(\d+)?)}/gi, (result, key, count) => {
+                let ret
                 if (key === 'rand' || key.indexOf('rand:') === 0) {
                   count = Math.min(Math.max(1, count || 6), 32)
-                  return crypto
+                  ret = crypto
                     .randomBytes(Math.ceil(count / 2))
                     .toString('hex')
                     .slice(0, count)
                 }
+                return ret ?? ''
               })
               // 字符串替换
               .replace(/{(hash|origin:?(.+)?|\w+)}/gi, (result, key, replacement) => {
@@ -87,13 +90,13 @@ export = (ctx: IPicGo) => {
                 if (key.startsWith('origin')) {
                   replacement = replacement === '' ? '-' : replacement
                   return fileName
-                    .substring(0, Math.max(0, fileName.lastIndexOf('.')) || fileName.length)
+                    ?.substring(0, Math.max(0, fileName.lastIndexOf('.')) || fileName.length)
                     .replace(/[\\/:<>|"' *?$#&@()[\]^~]+/g, replacement)
                 }
                 // 文件hash值
                 if (key === 'hash') {
                   const hash = crypto.createHash('md5')
-                  hash.update(item.buffer)
+                  hash.update(item.buffer as Buffer)
                   return hash.digest('hex')
                 }
                 return key
