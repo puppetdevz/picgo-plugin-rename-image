@@ -17,7 +17,7 @@ const pluginConfig = (ctx: IPicGo): IPluginConfig[] => {
       type: 'input',
       alias: '路径格式',
       default: (userConfig as IPluginConfig).format || '',
-      message: '如：image/note/{localFolder:2}/{y}/{m}/{d}/{h}-{i}-{s}-{hash}-{origin}-{rand:5}',
+      message: '如：image/note/{localFolder:2}/{y}/{m}/{d}/{h}-{i}-{s}-{hash}-{size}-{origin}-{rand:5}',
       required: false
     }
   ]
@@ -57,12 +57,12 @@ export = (ctx: IPicGo) => {
             fileName = format
               .trim()
               // 替换日期
-              .replace(/{(y|m|d|h|i|s|ms|timestamp)}/gi, (result, key) => {
+              .replace(/{(y|m|d|h|i|s|ms|timestamp)}/gi, (match, key) => {
                 if (key === 'ms' || key === 'timestamp') return formatObject[key]
                 else return formatObject[key].toString().padStart(2, '0')
               })
               // 截取本地目录
-              .replace(/{(localFolder:?(\d+)?)}/gi, (result, key, count) => {
+              .replace(/{(localFolder:?(\d+)?)}/gi, (match, key, count) => {
                 if (ctx.input[i]) {
                   count = Math.max(1, count || 0)
                   const paths = path.dirname(ctx.input[i]).split(path.sep)
@@ -71,7 +71,7 @@ export = (ctx: IPicGo) => {
                 return key.replace(/:/g, '')
               })
               // 随机字符串
-              .replace(/{(rand:?(\d+)?)}/gi, (result, key, count) => {
+              .replace(/{(rand:?(\d+)?)}/gi, (match, key, count) => {
                 if (key === 'rand' || key.indexOf('rand:') === 0) {
                   count = Math.min(Math.max(1, count || 6), 32)
                   return crypto
@@ -80,20 +80,37 @@ export = (ctx: IPicGo) => {
                     .slice(0, count)
                 }
               })
-              // 字符串替换
-              .replace(/{(hash|origin:?(.+)?|\w+)}/gi, (result, key, replacement) => {
+              // 哈希替换
+              .replace(/{(hash)(?::(md5|sha1|sha2-256))?}/gi, (match, key, hashAlgorithm = '') => {
+                // 支持的格式：hash、hash:md5 等等，其他格式抛出异常，如果是 hash，则使用 md5
+                hashAlgorithm = hashAlgorithm.trim().toLowerCase()
+                ctx.log.info('The hash algorithm user expected is ', hashAlgorithm)
+                const algorithmMap = {
+                  '': 'md5',
+                  md5: 'md5',
+                  sha1: 'sha1',
+                  'sha2-256': 'sha256'
+                }
+                const algorithm = algorithmMap[hashAlgorithm]
+                ctx.log.info('The actual hash algorithm is ', algorithm)
+                if (!algorithm) {
+                  ctx.log.error(`hash algorithm ${hashAlgorithm} not supported`)
+                  throw new Error(`hash algorithm ${hashAlgorithm} not supported`)
+                }
+                return item.buffer ? crypto.createHash(algorithm).update(item.buffer).digest('hex') : key
+              })
+              // 文件大小
+              .replace(/{size}/gi, (match) => {
+                return item.buffer?.length.toString()
+              })
+              // 文件原名字符串替换
+              .replace(/{(origin:?(.+)?|\w+)}/gi, (match, key, replacement) => {
                 // 文件原名
                 if (key.startsWith('origin')) {
                   replacement = replacement === '' ? '-' : replacement
                   return fileName
                     .substring(0, Math.max(0, fileName.lastIndexOf('.')) || fileName.length)
                     .replace(/[\\/:<>|"' *?$#&@()[\]^~]+/g, replacement)
-                }
-                // 文件hash值
-                if (key === 'hash') {
-                  const hash = crypto.createHash('md5')
-                  hash.update(item.buffer)
-                  return hash.digest('hex')
                 }
                 return key
               })
